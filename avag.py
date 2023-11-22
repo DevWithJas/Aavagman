@@ -1,3 +1,4 @@
+Copy code
 import os
 import sys
 import time
@@ -6,11 +7,10 @@ from bs4 import BeautifulSoup
 from urllib.parse import urlencode
 import streamlit as st
 
-# Selenium and WebDriver imports
+# Selenium and WebDriver imports for Firefox
 from selenium import webdriver
-from selenium.webdriver.chrome.service import Service as ChromeService
-from selenium.webdriver.chrome.options import Options as ChromeOptions
-from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.firefox.options import Options as FirefoxOptions
+from webdriver_manager.firefox import GeckoDriverManager
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
@@ -19,6 +19,15 @@ from selenium.common.exceptions import TimeoutException
 
 # Import for Google Transit Feed Specification Realtime (GTFS-realtime) bindings
 import gtfs_realtime_pb2
+
+# Initialize headless Firefox WebDriver
+def init_headless_firefox_driver():
+    firefox_options = FirefoxOptions()
+    firefox_options.add_argument("--headless")
+    # Additional Firefox options can be added as needed
+
+    driver = webdriver.Firefox(executable_path=GeckoDriverManager().install(), options=firefox_options)
+    return driver
 
 # Other functions and Streamlit app code remain the same...
 
