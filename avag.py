@@ -15,16 +15,15 @@ from selenium.common.exceptions import TimeoutException
 import gtfs_realtime_pb2  # Ensure the gtfs_realtime_pb2.py file is accessible
 
 
-def install_geckodriver():
-    # Install geckodriver using SeleniumBase
-    os.system('sbase install geckodriver')
-    # Create a symbolic link to the geckodriver executable
-    gecko_path = "/home/appuser/.local/bin/geckodriver"
-    os.system(f"ln -s {gecko_path} /usr/local/bin/geckodriver")
-    os.system(f"ln -s {gecko_path} /usr/local/bin/wires")
+def init_headless_chrome_driver():
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--disable-gpu")
+    chrome_options.add_argument("--no-sandbox")
+    chrome_options.add_argument("--disable-dev-shm-usage")
 
-# Call this function to ensure geckodriver is installed
-install_geckodriver()
+    driver = webdriver.Chrome(options=chrome_options)
+    return driver
 
 # Function to fetch all bus IDs
 def fetch_all_bus_ids(api_key):
