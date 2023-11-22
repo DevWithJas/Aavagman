@@ -1,50 +1,37 @@
-
-import os
 import sys
-import time
+
+# Specify the path to gtfs_realtime_pb2.py
+file_path = "D:\\Project_DTC\\gtfs_realtime_pb2.py"
+
+# Add the file's directory to sys.path so you can import the module
+sys.path.append(file_path.rsplit('\\', 1)[0])
+
+import streamlit as st
+import requests
+import tkinter as tk
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urlencode
 import streamlit as st
-
-# Selenium and WebDriver imports for Firefox
+import requests
+from urllib.parse import urlencode
+from bs4 import BeautifulSoup
 from selenium import webdriver
-from selenium.webdriver.firefox.options import Options as FirefoxOptions
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.firefox.service import Service
 from webdriver_manager.firefox import GeckoDriverManager
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
+import streamlit as st
+import requests
+import gtfs_realtime_pb2
+import tkinter as tk
+import requests
+from bs4 import BeautifulSoup
+from urllib.parse import urlencode
 from selenium.common.exceptions import TimeoutException
-
-# Import for Google Transit Feed Specification Realtime (GTFS-realtime) bindings
-import gtfs_realtime_pb2
-
-# Initialize headless Firefox WebDriver
-import gtfs_realtime_pb2
-
-# Initialize headless Firefox WebDriver
-def init_headless_firefox_driver():
-    firefox_options = FirefoxOptions()
-    firefox_options.add_argument("--headless")
-    # Additional Firefox options can be added as needed
-
-    driver = webdriver.Firefox(executable_path=GeckoDriverManager().install(), options=firefox_options)
-    return driver
-
-# Other functions and Streamlit app code remain the same...
-
-# Function to initialize headless Chrome WebDriver
-def init_headless_chrome_driver():
-    chrome_options = ChromeOptions()
-    chrome_options.add_argument("--headless")
-    chrome_options.add_argument("--disable-gpu")
-    chrome_options.add_argument("--no-sandbox")
-    chrome_options.add_argument("--disable-dev-shm-usage")
-
-    # Automatically manage the correct version of ChromeDriver
-    driver = webdriver.Chrome(ChromeDriverManager().install(), options=chrome_options)
-    return driver
+import time
 
 # Function to fetch all bus IDs
 def fetch_all_bus_ids(api_key):
@@ -146,57 +133,46 @@ def format_directions(stops_list):
     formatted_stops = [stop.split('.', 1)[-1].strip() for stop in stops_list]
     return formatted_stops
 
-# Function to enter directions on Bing Maps
-def enter_directions(driver, *destinations):
-    try:
-        # Open Bing Maps in a new tab using JavaScript
-        driver.execute_script("window.open('https://www.bing.com/maps');")
-        
-        # Switch to the new tab
-        driver.switch_to.window(driver.window_handles[1])
-        
-        # Click on the directions button using XPath
-        directions_button_xpath = '//*[@title="Directions"]'
-        WebDriverWait(driver, 30).until(EC.element_to_be_clickable((By.XPATH, directions_button_xpath))).click()
+# Function to call Bing Maps Autosuggest API
+def get_first_suggestion_from_bing(bus_stop_name, bing_maps_key):
+    query = f"{bus_stop_name}, Delhi"  # Append 'Delhi' for precision
+    bing_autosuggest_url = f"http://dev.virtualearth.net/REST/v1/Locations?query={query}&key={bing_maps_key}"
+    response = requests.get(bing_autosuggest_url)
+    if response.status_code == 200:
+        suggestions = response.json()
+        if suggestions['resourceSets']:
+            first_location = suggestions['resourceSets'][0]['resources'][0]
+            return {
+                "name": first_location['name'],
+                "latitude": first_location['point']['coordinates'][0],
+                "longitude": first_location['point']['coordinates'][1]
+            }
+    return None
 
-        # Wait for the 'From' input field to be visible
-        from_input_xpath = '//*[@title="From"]'
-        from_input = WebDriverWait(driver, 30).until(EC.visibility_of_element_located((By.XPATH, from_input_xpath)))
-        from_input.send_keys(destinations[0])
+# Function to fetch and display bus stops with the first suggestion from Bing Maps
+def fetch_and_display_bus_stops_with_bing(bus_number, bing_maps_key):
+    request_url = f"https://www.dtcbusroutes.in/bus/search/?{urlencode({'bus': bus_number})}"
+    response = requests.get(request_url)
+    bus_stops_info = []  # List to store bus stop information
 
-        # Wait for the 'To' input field to be visible
-        to_input_xpath = '//*[@title="To"]'
-        to_input = WebDriverWait(driver, 30).until(EC.visibility_of_element_located((By.XPATH, to_input_xpath)))
-        to_input.send_keys(destinations[1])
-        to_input.send_keys(Keys.ENTER)  # Press ENTER to confirm the first destination
+    if response.status_code == 200:
+        soup = BeautifulSoup(response.content, 'html.parser')
+        stops = soup.find_all('p', {'itemtype': 'http://schema.org/BusStop'})
+        for stop in stops:
+            stop_name = stop.get_text(strip=True)
+            suggestion = get_first_suggestion_from_bing(stop_name, bing_maps_key)
+            if suggestion:
+                bus_stops_info.append((suggestion['name'], (suggestion['latitude'], suggestion['longitude'])))
+            else:
+                bus_stops_info.append((stop_name, None))
 
-        # Add additional destinations if any
-        add_destination_xpath = '//*[@id="directionsPanelRoot"]/div/div[3]/div[3]/a'
-        for index, destination in enumerate(destinations[2:], start=2):
-            WebDriverWait(driver, 30).until(EC.element_to_be_clickable((By.XPATH, add_destination_xpath))).click()
-            new_destination_input_xpath = f'((//input[@title="To"])[{index}])'
-            new_destination_input = WebDriverWait(driver, 30).until(EC.visibility_of_element_located((By.XPATH, new_destination_input_xpath)))
-            new_destination_input.send_keys(destination)
-            new_destination_input.send_keys(Keys.ENTER)  # Press ENTER to confirm each additional destination
+    return bus_stops_info
 
-                
-            # Click the 'Go' button to initiate the search
-            go_button_xpath = '//*[@data-tag="dirBtnGo"]'
-            go_button = WebDriverWait(driver, 30).until(EC.element_to_be_clickable((By.XPATH, go_button_xpath)))
-            go_button.click()
-            
-            # Wait for the map to load and the URL to change
-            WebDriverWait(driver, 30).until(lambda d: d.current_url != "about:blank")
-            
-                # Extract the final URL after the map has been generated
-            final_url = driver.current_url
-            return final_url
-    
-        except Exception as e:
-            st.error(f"An error occurred in the Selenium function: {e}")
-            return None
-        finally:
-            driver.quit()
+# Function to create a Google Maps URL with the bus stops coordinates
+def create_google_maps_url(bus_stops_coordinates):
+    base_url = "https://www.google.com/maps/dir/"
+    coordinates_str = '/'.join([f"{lat},{lon}" for lat, lon in bus_stops_coordinates])
+    return f"{base_url}{coordinates_str}"
 
 # Streamlit app code
 st.title("Aavagaman (आवागमन)")
@@ -210,7 +186,7 @@ st.header("Real-time Bus Information")
 
 api_key_delhi_transit = "Giy8xwSFhYI3wZyvzJfb34dgsXJ6DKXQ"  # Replace with your actual API key
 bus_ids = fetch_all_bus_ids(api_key_delhi_transit)
-selected_bus_id = st.sidebar.selectbox("Select Bus ID", bus_ids)
+selected_bus_id = st.sidebar.selectbox("Select Bus ID for real time data", bus_ids)
 
 if st.button("Fetch and Display Data"):
     fetch_and_display_data_for_id(api_key_delhi_transit, selected_bus_id)
@@ -275,33 +251,31 @@ def display_route_on_map(bus_stops):
     st.markdown(f"Route Map: [View Route on Bing Maps]({map_url})")
 
 # Bus Stops Information Section
-# Bus Stops Information Section
-st.header("Bus Stops Information with Selenium")
+st.header("Bus Stops Information and Mapping")
 bus_number = st.text_input("Enter the Bus Number to fetch stops", "")
 
-if st.button("Fetch Stops and Process with Selenium"):
+if st.button("Fetch Stops and Display Map"):
     if bus_number:
-        stops_list = fetch_and_display_bus_stops(bus_number)
-        if stops_list:
+        # Fetch bus stops and their coordinates from Bing Maps
+        bus_stops_info = fetch_and_display_bus_stops_with_bing(bus_number, api_key_bing_maps)
+        if bus_stops_info:
             # Display bus stops in the Streamlit app
             st.subheader("Bus Stops:")
-            for stop in stops_list:
-                st.text(stop)
+            # Create a visually appealing list of bus stops
+            for stop_name, _ in bus_stops_info:
+                # Using markdown to style the display
+                st.markdown(f"* **{stop_name}**")
 
-            formatted_stops = format_directions(stops_list)
-
-            # Initialize the headless Firefox WebDriver and use the enter_directions function
-            driver = init_headless_firefox_driver()
-            try:
-                map_url = enter_directions(driver, *formatted_stops)
-                if map_url:
-                    st.markdown(f"View your map: [Open Map]({map_url})", unsafe_allow_html=True)
-            except Exception as e:
-                st.error(f"An error occurred: {e}")
-            finally:
-                driver.quit()
+            # Extract coordinates for map URL creation
+            bus_stops_coordinates = [coords for _, coords in bus_stops_info if coords]
+            if bus_stops_coordinates:
+                # Create and display a map URL
+                map_url = create_google_maps_url(bus_stops_coordinates)
+                st.markdown(f"Bus Route Map: [View Route on Google Maps]({map_url})")
+            else:
+                st.warning("Unable to generate map URL due to missing coordinates.")
         else:
-            st.error("No stops found for the given bus number.")
+            st.error("No bus stops found.")
     else:
         st.warning("Please enter a bus number.")
 
