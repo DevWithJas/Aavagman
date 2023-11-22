@@ -13,7 +13,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import TimeoutException
 import gtfs_realtime_pb2  # Ensure the gtfs_realtime_pb2.py file is accessible
-
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 
 def init_headless_chrome_driver():
     chrome_options = Options()
