@@ -179,28 +179,27 @@ def enter_directions(driver, *destinations):
             new_destination_input.send_keys(destination)
             new_destination_input.send_keys(Keys.ENTER)  # Press ENTER to confirm each additional destination
 
-        # Click the 'Go' button to initiate the search
-        go_button_xpath = '//*[@data-tag="dirBtnGo"]'
-        WebDriverWait(driver, 30).until(EC.element_to_be_clickable((By.XPATH, go_button_xpath))).click()
-        final_url = driver.current_url
-
-    except TimeoutException as e:
-        st.error("Timeout occurred while trying to find an element. Check if the XPath is correct and the page has loaded.")
-        print(e)
-    except Exception as e:
-        st.error("An error occurred in the Selenium function.")
-        print(e)
-
-        st.info("The browser will remain open for 2 minutes. Please close it manually when done.")
-    try:
-        for remaining in range(120, 0, -1):
-            st.info(f"Browser will close automatically in {remaining} seconds...")
-            time.sleep(1)
-    except:
-        pass  # Ignore any exceptions, such as the user closing the window early
-
-    # Close the browser
-    driver.quit()
+                
+            # Click the 'Go' button to initiate the search
+            go_button_xpath = '//*[@data-tag="dirBtnGo"]'
+            go_button = WebDriverWait(driver, 30).until(EC.element_to_be_clickable((By.XPATH, go_button_xpath)))
+            go_button.click()
+            
+            # Wait for the map to load and the URL to change
+            WebDriverWait(driver, 30).until(lambda d: d.current_url != "about:blank")
+            
+            # You might need to add an explicit wait here for an element that confirms the map has loaded
+            # For example, wait for a map element to be visible
+            
+            # Extract the final URL after the map has been generated
+            final_url = driver.current_url
+            return final_url
+    
+        except Exception as e:
+            st.error(f"An error occurred in the Selenium function: {e}")
+            return None
+        finally:
+            driver.quit()
 
 # Streamlit app code
 st.title("Aavagaman (आवागमन)")
