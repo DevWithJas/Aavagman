@@ -1,36 +1,38 @@
 import sys
-
-# Specify the path to gtfs_realtime_pb2.py
-file_path = "D:\\Project_DTC\\gtfs_realtime_pb2.py"
-
-# Add the file's directory to sys.path so you can import the module
-sys.path.append(file_path.rsplit('\\', 1)[0])
-
-import gtfs_realtime_pb2
-import streamlit as st
-import requests
+import time
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urlencode
 import streamlit as st
-import requests
-from urllib.parse import urlencode
-from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.firefox.service import Service
-from webdriver_manager.firefox import GeckoDriverManager
+from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-import streamlit as st
-import requests
-import gtfs_realtime_pb2
-import requests
-from bs4 import BeautifulSoup
-from urllib.parse import urlencode
 from selenium.common.exceptions import TimeoutException
-import time
+
+# Specify the path to gtfs_realtime_pb2.py
+file_path = "D:\\Project_DTC\\gtfs_realtime_pb2.py"
+sys.path.append(file_path.rsplit('\\', 1)[0])
+import gtfs_realtime_pb2
+
+# Function to install Firefox and geckodriver for Streamlit Cloud deployment
+@st.experimental_singleton
+def install_firefox_and_geckodriver():
+    os.system("apt-get update")
+    os.system("apt-get install -y firefox-esr")
+    os.system("sbase install geckodriver")
+    gecko_path = "/home/appuser/venv/lib/python3.7/site-packages/seleniumbase/drivers/geckodriver"
+    os.system(f"ln -s {gecko_path} /usr/local/bin/geckodriver")
+    os.system(f"ln -s {gecko_path} /usr/local/bin/wires")
+
+# Initialize Selenium WebDriver for Streamlit Cloud deployment
+def init_driver():
+    options = Options()
+    options.headless = True  # Run in headless mode
+    driver = webdriver.Firefox(options=options)
+    return driver
 
 # Function to fetch all bus IDs
 def fetch_all_bus_ids(api_key):
