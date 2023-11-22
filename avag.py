@@ -27,7 +27,6 @@ from selenium.webdriver.support import expected_conditions as EC
 import streamlit as st
 import requests
 import gtfs_realtime_pb2
-import tkinter as tk
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urlencode
