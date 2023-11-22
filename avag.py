@@ -41,8 +41,8 @@ def init_driver():
     options = Options()
     options.headless = True  # Run in headless mode
     options.binary_location = "/usr/bin/firefox-esr"
-    driver = webdrive
-
+    driver = webdriver.Firefox(options=options)
+    return driver
 
 # Function to fetch all bus IDs
 def fetch_all_bus_ids(api_key):
