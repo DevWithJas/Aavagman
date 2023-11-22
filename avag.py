@@ -1,5 +1,4 @@
 import sys
-import time
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urlencode
@@ -8,11 +7,12 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.firefox.options import Options
-from selenium.webdriver.firefox.service import Service  # Import Service here
+from selenium.webdriver.firefox.service import Service  # Correct import for Service
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 from webdriver_manager.firefox import GeckoDriverManager
+import time
 import time
 from selenium.webdriver.firefox.options import Options 
 
