@@ -1,49 +1,19 @@
+import os
 import sys
+import time
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urlencode
 import streamlit as st
 from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.firefox.options import Options
-from selenium.webdriver.firefox.service import Service  # Correct import for Service
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import TimeoutException
-from webdriver_manager.firefox import GeckoDriverManager
-import time
-import time
-from selenium.webdriver.firefox.options import Options 
-import os
-import sys
+import gtfs_realtime_pb2  # Ensure the gtfs_realtime_pb2.py file is accessible
 
-# Specify the path to gtfs_realtime_pb2.py
-file_path = "D:\\Project_DTC\\gtfs_realtime_pb2.py"
-sys.path.append(file_path.rsplit('\\', 1)[0])
-import gtfs_realtime_pb2
-
-# Function to install Firefox and geckodriver for Streamlit Cloud deployment
-@st.experimental_singleton
-def install_firefox_and_geckodriver():
-    os.system('sbase install geckodriver')
-    gecko_path = "/home/appuser/.local/bin/geckodriver"
-    os.system(f"ln -s {gecko_path} /usr/local/bin/geckodriver")
-    os.system(f"ln -s {gecko_path} /usr/local/bin/wires")
-
-# Call the function to ensure geckodriver is installed
-install_firefox_and_geckodriver()
-
-# Initialize Selenium WebDriver for Streamlit Cloud deployment
-from selenium import webdriver
-from selenium.webdriver.firefox.options import Options
-
-def init_driver():
-    options = Options()
-    options.headless = True  # Run in headless mode
-    options.binary_location = "/usr/bin/firefox-esr"
-    driver = webdriver.Firefox(options=options)
-    return driver
 
 # Function to fetch all bus IDs
 def fetch_all_bus_ids(api_key):
