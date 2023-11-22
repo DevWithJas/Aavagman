@@ -21,6 +21,9 @@ from selenium.common.exceptions import TimeoutException
 import gtfs_realtime_pb2
 
 # Initialize headless Firefox WebDriver
+import gtfs_realtime_pb2
+
+# Initialize headless Firefox WebDriver
 def init_headless_firefox_driver():
     firefox_options = FirefoxOptions()
     firefox_options.add_argument("--headless")
