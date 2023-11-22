@@ -277,6 +277,7 @@ def display_route_on_map(bus_stops):
 # Bus Stops Information Section
 st.header("Bus Stops Information with Selenium")
 bus_number = st.text_input("Enter the Bus Number to fetch stops", "")
+# Usage in your Streamlit app
 if st.button("Fetch Stops and Process with Selenium"):
     if bus_number:
         stops_list = fetch_and_display_bus_stops(bus_number)
@@ -288,8 +289,8 @@ if st.button("Fetch Stops and Process with Selenium"):
 
             formatted_stops = format_directions(stops_list)
 
-            # Initialize the headless Chrome WebDriver
-            driver = init_headless_chrome_driver()
+            # Initialize the headless Firefox WebDriver
+            driver = init_headless_firefox_driver()
 
             try:
                 # Use the enter_directions function with formatted bus stops
@@ -299,7 +300,6 @@ if st.button("Fetch Stops and Process with Selenium"):
                 st.error(f"An error occurred: {e}")
             finally:
                 driver.quit()
-
         else:
             st.error("No stops found for the given bus number.")
     else:
