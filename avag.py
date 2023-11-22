@@ -278,9 +278,8 @@ if st.button("Fetch Stops and Process with Selenium"):
 
             formatted_stops = format_directions(stops_list)
 
-            # Initialize the Firefox WebDriver with correct service and options
-            service = Service(GeckoDriverManager().install())
-            driver = webdriver.Firefox(service=service)
+            # Initialize the headless Chrome WebDriver
+            driver = init_headless_chrome_driver()
 
             try:
                 # Use the enter_directions function with formatted bus stops
@@ -288,7 +287,8 @@ if st.button("Fetch Stops and Process with Selenium"):
                 st.success("Processed data with Selenium. Please close the browser manually when done.")
             except Exception as e:
                 st.error(f"An error occurred: {e}")
-            # Note: The driver.quit() is removed to keep the browser open.
+            finally:
+                driver.quit()
 
         else:
             st.error("No stops found for the given bus number.")
