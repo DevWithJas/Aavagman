@@ -22,6 +22,7 @@ import gtfs_realtime_pb2
 
 # Other functions and Streamlit app code remain the same...
 
+# Function to initialize headless Chrome WebDriver
 def init_headless_chrome_driver():
     chrome_options = ChromeOptions()
     chrome_options.add_argument("--headless")
