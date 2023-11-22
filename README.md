@@ -1,6 +1,6 @@
 # Aavagaman V1
 
-Welcome to Aavagaman V1, an intuitive and user-friendly transit information system designed to enhance the daily commute experience. Our application leverages cutting-edge technologies to provide real-time bus information, enabling users to make informed decisions about their travel routes. Aavagaman, which translates to 'coming and going' in Hindi, embodies the essence of smooth and reliable transit for its users.
+Welcome to Aavagaman V1, an intuitive and user-friendly transit information system designed to enhance the daily commute experience. My application leverages cutting-edge technologies to provide real-time bus information, enabling users to make informed decisions about their travel routes. Aavagaman, which translates to 'coming and going' in Hindi, embodies the essence of smooth and reliable transit for its users.
 
 ## Technology Stack
 
