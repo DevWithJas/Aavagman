@@ -279,9 +279,10 @@ def display_route_on_map(bus_stops):
     st.markdown(f"Route Map: [View Route on Bing Maps]({map_url})")
 
 # Bus Stops Information Section
+# Bus Stops Information Section
 st.header("Bus Stops Information with Selenium")
 bus_number = st.text_input("Enter the Bus Number to fetch stops", "")
-# Usage in your Streamlit app
+
 if st.button("Fetch Stops and Process with Selenium"):
     if bus_number:
         stops_list = fetch_and_display_bus_stops(bus_number)
@@ -293,18 +294,12 @@ if st.button("Fetch Stops and Process with Selenium"):
 
             formatted_stops = format_directions(stops_list)
 
-            # Initialize the headless Firefox WebDriver
-           
+            # Initialize the headless Firefox WebDriver and use the enter_directions function
             driver = init_headless_firefox_driver()
-            map_url = enter_directions(driver, start_location, end_location)
-            
-            if map_url:
-                st.markdown(f"View your map: [Open Map]({map_url})", unsafe_allow_html=True)
-
             try:
-                # Use the enter_directions function with formatted bus stops
-                enter_directions(driver, *formatted_stops)
-                st.success("Processed data with Selenium. Please close the browser manually when done.")
+                map_url = enter_directions(driver, *formatted_stops)
+                if map_url:
+                    st.markdown(f"View your map: [Open Map]({map_url})", unsafe_allow_html=True)
             except Exception as e:
                 st.error(f"An error occurred: {e}")
             finally:
@@ -313,3 +308,4 @@ if st.button("Fetch Stops and Process with Selenium"):
             st.error("No stops found for the given bus number.")
     else:
         st.warning("Please enter a bus number.")
+
