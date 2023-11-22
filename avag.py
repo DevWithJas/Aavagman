@@ -11,6 +11,9 @@ from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
+import time
+from selenium.webdriver.firefox.options import Options 
+
 
 # Specify the path to gtfs_realtime_pb2.py
 file_path = "D:\\Project_DTC\\gtfs_realtime_pb2.py"
