@@ -9,7 +9,6 @@ sys.path.append(file_path.rsplit('\\', 1)[0])
 import gtfs_realtime_pb2
 import streamlit as st
 import requests
-import tkinter as tk
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urlencode
