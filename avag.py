@@ -182,6 +182,7 @@ def enter_directions(driver, *destinations):
         # Click the 'Go' button to initiate the search
         go_button_xpath = '//*[@data-tag="dirBtnGo"]'
         WebDriverWait(driver, 30).until(EC.element_to_be_clickable((By.XPATH, go_button_xpath))).click()
+        final_url = driver.current_url
 
     except TimeoutException as e:
         st.error("Timeout occurred while trying to find an element. Check if the XPath is correct and the page has loaded.")
@@ -293,7 +294,12 @@ if st.button("Fetch Stops and Process with Selenium"):
             formatted_stops = format_directions(stops_list)
 
             # Initialize the headless Firefox WebDriver
+           
             driver = init_headless_firefox_driver()
+            map_url = enter_directions(driver, start_location, end_location)
+            
+            if map_url:
+                st.markdown(f"View your map: [Open Map]({map_url})", unsafe_allow_html=True)
 
             try:
                 # Use the enter_directions function with formatted bus stops
