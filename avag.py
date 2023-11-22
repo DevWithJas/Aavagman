@@ -188,10 +188,7 @@ def enter_directions(driver, *destinations):
             # Wait for the map to load and the URL to change
             WebDriverWait(driver, 30).until(lambda d: d.current_url != "about:blank")
             
-            # You might need to add an explicit wait here for an element that confirms the map has loaded
-            # For example, wait for a map element to be visible
-            
-            # Extract the final URL after the map has been generated
+                # Extract the final URL after the map has been generated
             final_url = driver.current_url
             return final_url
     
