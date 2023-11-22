@@ -15,6 +15,17 @@ from selenium.common.exceptions import TimeoutException
 import gtfs_realtime_pb2  # Ensure the gtfs_realtime_pb2.py file is accessible
 
 
+def install_geckodriver():
+    # Install geckodriver using SeleniumBase
+    os.system('sbase install geckodriver')
+    # Create a symbolic link to the geckodriver executable
+    gecko_path = "/home/appuser/.local/bin/geckodriver"
+    os.system(f"ln -s {gecko_path} /usr/local/bin/geckodriver")
+    os.system(f"ln -s {gecko_path} /usr/local/bin/wires")
+
+# Call this function to ensure geckodriver is installed
+install_geckodriver()
+
 # Function to fetch all bus IDs
 def fetch_all_bus_ids(api_key):
     url = f"https://otd.delhi.gov.in/api/realtime/VehiclePositions.pb?key={api_key}"
