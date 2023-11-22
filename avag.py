@@ -5,25 +5,32 @@ import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urlencode
 import streamlit as st
+
+# Selenium and WebDriver imports
 from selenium import webdriver
-from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.chrome.service import Service as ChromeService
+from selenium.webdriver.chrome.options import Options as ChromeOptions
+from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import TimeoutException
-import gtfs_realtime_pb2  # Ensure the gtfs_realtime_pb2.py file is accessible
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
+
+# Import for Google Transit Feed Specification Realtime (GTFS-realtime) bindings
+import gtfs_realtime_pb2
+
+# Other functions and Streamlit app code remain the same...
 
 def init_headless_chrome_driver():
-    chrome_options = Options()
+    chrome_options = ChromeOptions()
     chrome_options.add_argument("--headless")
     chrome_options.add_argument("--disable-gpu")
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
 
-    driver = webdriver.Chrome(options=chrome_options)
+    # Automatically manage the correct version of ChromeDriver
+    driver = webdriver.Chrome(ChromeDriverManager().install(), options=chrome_options)
     return driver
 
 # Function to fetch all bus IDs
