@@ -8,7 +8,6 @@ sys.path.append(file_path.rsplit('\\', 1)[0])
 
 import streamlit as st
 import requests
-import tkinter as tk
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urlencode
@@ -16,17 +15,9 @@ import streamlit as st
 import requests
 from urllib.parse import urlencode
 from bs4 import BeautifulSoup
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.firefox.service import Service
-from webdriver_manager.firefox import GeckoDriverManager
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 import streamlit as st
 import requests
 import gtfs_realtime_pb2
-import tkinter as tk
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urlencode
