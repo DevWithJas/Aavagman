@@ -46,5 +46,7 @@ Aavagaman V1 is open-source software licensed under the MIT license.
 
 ![image](https://github.com/CreateJas/Aavagman/assets/91935368/287db89e-5198-4368-ae66-c7450d60202c)
 
+![image](https://github.com/CreateJas/Aavagman/assets/91935368/ba4f3963-e03f-43a4-b659-dc2aa6ae662a)
 
+![image](https://github.com/CreateJas/Aavagman/assets/91935368/8c6fcb72-165e-4f42-86a5-de0648239a22)
 
